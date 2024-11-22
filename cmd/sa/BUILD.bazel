@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "sa_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/tmhdgsn/sa/cmd/sa",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "sa",
+    embed = [":sa_lib"],
+    visibility = ["//visibility:public"],
+)

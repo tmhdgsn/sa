@@ -1,0 +1,7 @@
+# Disable bzlmod lockfile for now. It needs merge conflict resolution built-in.
+# See https://github.com/bazelbuild/bazel/issues/20369
+MODULE.bazel.lock
+
+/bazel-*
+/node_modules
+/web/node_modules

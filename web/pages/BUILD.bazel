@@ -1,0 +1,56 @@
+load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+
+SRCS = [
+    "_app.tsx",
+    "index.tsx",
+]
+
+SPECS = [
+    "index.test.tsx",
+]
+
+ts_project(
+    name = "pages",
+    srcs = SRCS,
+    declaration = True,
+    resolve_json_module = True,
+    transpiler = "tsc",
+    tsconfig = "//web:tsconfig",
+    visibility = ["//web:__subpackages__"],
+    deps = [
+        "//web:node_modules/@types/react",
+        "//web:node_modules/@types/react-dom",
+        "//web:node_modules/next",
+        "//web/pages/api",
+    ],
+)
+
+ts_project(
+    name = "specs",
+    srcs = SPECS,
+    declaration = True,
+    resolve_json_module = True,
+    transpiler = "tsc",
+    tsconfig = "//web:tsconfig",
+    deps = [
+        "//web:node_modules/@testing-library/jest-dom",
+        "//web:node_modules/@testing-library/react",
+        "//web:node_modules/@types/jest",
+        "//web/pages",
+    ],
+)
+
+jest_test(
+    name = "jest_test",
+    config = "//web:jest_config",
+    data = [
+        ":specs",
+        "//web:node_modules/jest-environment-jsdom",
+        "//web:node_modules/jest-transform-stub",
+        "//web:node_modules/react",
+        "//web:package_json",
+        "//web/styles",
+    ],
+    node_modules = "//web:node_modules",
+)
