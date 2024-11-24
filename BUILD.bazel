@@ -1,5 +1,8 @@
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("@gazelle//:def.bzl", "gazelle")
 load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load", "oci_push")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 gazelle(name = "gazelle")
 
@@ -8,3 +11,29 @@ package(default_visibility = ["//:__subpackages__"])
 # Create the root of the "virtual store" of npm dependencies under bazel-out.
 # This must be done in the package where the pnpm workspace is rooted.
 npm_link_all_packages(name = "node_modules")
+
+pkg_tar(
+    name = "sa_tar",
+    srcs = ["//cmd/sa"],
+)
+
+oci_image(
+    name = "image",
+    base = "@nginx_debian_slim",
+    tars = [
+        ":sa_tar",
+    ],
+)
+
+oci_load(
+    name = "web_tarball",
+    image = ":image",
+    repo_tags = ["sa:latest"],
+)
+
+oci_push(
+    name = "push",
+    image = ":image",
+    remote_tags = ["latest"],
+    repository = "us-central1-docker.pkg.dev/tmhdgsn/tmhdgsn/sa",
+)

@@ -1,6 +1,8 @@
 load("@aspect_rules_js//js:defs.bzl", "js_library", "js_test")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//web:next/package_json.bzl", next_bin = "bin")
 load("//web:defs.bzl", "next")
@@ -36,6 +38,7 @@ next(
     ],
     next_bin = "./node_modules/next/dist/bin/next",
     next_js_binary = ":next_js_binary",
+    visibility = ["//visibility:public"],
 )
 
 # A smoke test on the artifact produced by the :next target
@@ -78,4 +81,12 @@ build_test(
         # TODO: fix in Next.js (https://github.com/vercel/next.js/issues/43344) or find work-around.
         # ":next_export",
     ],
+)
+
+go_library(
+    name = "web",
+    srcs = ["web.go"],
+    embedsrcs = [":next_export"],
+    importpath = "github.com/tmhdgsn/sa/web",
+    visibility = ["//visibility:public"],
 )

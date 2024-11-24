@@ -5,6 +5,7 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/tmhdgsn/sa/cmd/sa",
     visibility = ["//visibility:private"],
+    deps = ["//web"],
 )
 
 go_binary(
