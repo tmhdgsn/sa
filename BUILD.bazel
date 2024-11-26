@@ -14,12 +14,13 @@ npm_link_all_packages(name = "node_modules")
 
 pkg_tar(
     name = "sa_tar",
-    srcs = ["//cmd/sa"],
+    srcs = ["//cmd/sa:sa_linux_amd64"],
 )
 
 oci_image(
     name = "image",
     base = "@nginx_debian_slim",
+    entrypoint = ["/cmd/sa/sa_linux_amd64"],
     tars = [
         ":sa_tar",
     ],

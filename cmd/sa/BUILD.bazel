@@ -1,4 +1,6 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_cross_binary", "go_library")
+
+package(default_visibility = ["//visibility:public"])
 
 go_library(
     name = "sa_lib",
@@ -12,4 +14,10 @@ go_binary(
     name = "sa",
     embed = [":sa_lib"],
     visibility = ["//visibility:public"],
+)
+
+go_cross_binary(
+    name = "sa_linux_amd64",
+    platform = "@io_bazel_rules_go//go/toolchain:linux_amd64",  # Target platform label
+    target = ":sa",
 )
